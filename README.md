@@ -6,7 +6,7 @@ development started
 
 ---
 
-### This will allow you to connect your android phone to your computer.
+### This library will allow you to connect your android phone to your computer.
 
 It's written in rust and you will get notified whenever there is an incomming or
 outgoing call
