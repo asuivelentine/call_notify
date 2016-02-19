@@ -6,6 +6,8 @@
        unused_import_braces,
        unsafe_code)]
 
+mod net;
+
 #[cfg(test)]
 mod test {
     #[test]
