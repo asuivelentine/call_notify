@@ -2,20 +2,22 @@
 
 ---
 
-development started
+Share Notifications about incomming calls between your PC and android phone.
 
 ---
 
-### This library will allow you to connect your android phone to your computer.
+####development started
 
-It's written in rust and you will get notified whenever there is an incomming or
-outgoing call
+
+
+---
 
 #### Protocol
 
 ---
 
-	The messages are in Json format containing:
+	All messages will be send with TCP
+	The payload is in Json format containing:
 		- Version
 		- Message type
 		- Caller number
@@ -34,5 +36,3 @@ The associative android app
 - notify the user about incomming calls
 - including some imformation about the caller
 - store the call history
-- modules can be added to parse more content
-
