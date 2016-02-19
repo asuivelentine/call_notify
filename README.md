@@ -8,8 +8,6 @@ Share Notifications about incomming calls between your PC and android phone.
 
 ####development started
 
-
-
 ---
 
 #### Protocol
