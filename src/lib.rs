@@ -6,6 +6,9 @@
        unused_import_braces,
        unsafe_code)]
 
+extern crate service_discovery;
+extern crate rustc_serialize;
+
 mod net;
 
 #[cfg(test)]

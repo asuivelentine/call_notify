@@ -4,3 +4,5 @@ version = "0.1.0"
 authors = ["asui <k.sickeler@gmail.com>"]
 
 [dependencies]
+service_discovery = "0.2.1"
+rustc-serialize = "0.3"
