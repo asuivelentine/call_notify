@@ -17,6 +17,8 @@ impl Peer {
     }
 }
 
+struct ServDis;
+
 #[cfg(test)]
 mod tests{
     use super::Peer;
