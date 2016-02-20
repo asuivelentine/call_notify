@@ -11,8 +11,18 @@ pub struct Peer {
 impl Peer {
     //creates a peer Object.
     fn new(port: u16) -> Peer {
+        use std::sync::mpsc::channel;
+        let (tx, rx) = channel();
+        tx.send(1).unwrap(); 
+                
         let sd = ServiceDiscovery::new(port, 1u32).unwrap();
-        sd.set_listen_for_peers(false);
+        sd.register_seek_peer_observer(tx);
+        sd.seek_peers();
+
+        match rx.recv() {
+            Ok(0u32) => (),
+            x=> println!("{:?}", x),
+        }
 
         Peer {
             ip: " ".to_string(),
