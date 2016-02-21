@@ -54,5 +54,6 @@ mod tests{
         let peer = Peer::new(5000);
         assert_eq!(42.to_string(), peer.ip);
         drop(peer);
+        drop(sd);
     }
 }
