@@ -10,22 +10,22 @@ pub struct Peer {
 
 impl Peer {
     //creates a peer Object.
-    fn new(port: u16) -> Peer {
+    pub fn new(port: u16) -> Peer {
         use std::sync::mpsc::channel;
+        let mut ip = " ".to_string();
         let (tx, rx) = channel();
-        tx.send(1).unwrap(); 
                 
-        let sd = ServiceDiscovery::new(port, 1u32).unwrap();
-        sd.register_seek_peer_observer(tx);
+        let sd = ServiceDiscovery::new_with_generator(port, || 1u32).unwrap();
+        sd.register_seek_peer_observer(tx.clone());
         sd.seek_peers();
 
         match rx.recv() {
-            Ok(0u32) => (),
+            Ok(msg) => ip = msg.to_string(),
             x=> println!("{:?}", x),
         }
 
         Peer {
-            ip: " ".to_string(),
+            ip: ip,
             port: port,
         }
     }
@@ -34,7 +34,9 @@ impl Peer {
 
 #[cfg(test)]
 mod tests{
-    use super::Peer;
+    use super::*;
+    use std::sync::mpsc::channel;
+    use service_discovery::ServiceDiscovery;
 
     #[test]
     fn it_works() {
@@ -43,8 +45,14 @@ mod tests{
 
     #[test]
     fn test_net_start() {
+        let port = 5000;
+        let (tx, _) = channel();
+        let sd = ServiceDiscovery::new(port, 42u32).unwrap();
+        sd.register_seek_peer_observer(tx.clone());
+        sd.set_listen_for_peers(true);
+
         let peer = Peer::new(5000);
-        assert_eq!(" ".to_string(), peer.ip);
+        assert_eq!(42.to_string(), peer.ip);
         drop(peer);
     }
 }

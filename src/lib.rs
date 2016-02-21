@@ -9,7 +9,7 @@
 extern crate service_discovery;
 extern crate rustc_serialize;
 
-mod net;
+pub mod net;
 
 #[cfg(test)]
 mod test {
