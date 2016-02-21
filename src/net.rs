@@ -1,5 +1,6 @@
 //TCP module
 use service_discovery::ServiceDiscovery;
+use get_if_addrs::get_if_addrs;
 
 //if a peer is found, return the ip and the port to establish a regular tcp connection.
 #[derive(Debug, Clone)]
@@ -29,6 +30,15 @@ impl Peer {
             port: port,
         }
     }
+
+    fn get_ip() -> String {
+        let mut ip = String::from(" ");
+        let ifaces = get_if_addrs().unwrap().into_iter();
+        for iface in ifaces.map(|item| item.addr).filter(|addr| !addr.is_loopback()){
+            ip = iface.ip().to_string();
+        }
+        ip
+    }
 }
 
 
@@ -55,5 +65,11 @@ mod tests{
         assert_eq!(42.to_string(), peer.ip);
         drop(peer);
         drop(sd);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_get_ip() {
+        assert_eq!(Peer::get_ip(), " ");
     }
 }
