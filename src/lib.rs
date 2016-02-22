@@ -8,7 +8,6 @@
 
 extern crate service_discovery;
 extern crate rustc_serialize;
-extern crate get_if_addrs; 
 
 pub mod net;
 
