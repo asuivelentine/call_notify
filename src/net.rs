@@ -1,4 +1,4 @@
-//TCP module
+//Service Discovery module
 use service_discovery::ServiceDiscovery;
 
 //if a peer is found, return the ip and the port to establish a regular tcp connection.
@@ -28,7 +28,6 @@ impl Peer {
             }
             x=> println!("{:?}", x),
         }
-
 
         Peer {
             ip: ip,
