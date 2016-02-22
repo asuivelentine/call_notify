@@ -5,6 +5,7 @@ use service_discovery::ServiceDiscovery;
 #[derive(Debug, Clone)]
 pub struct Peer {
     pub ip: String,
+    pub ip_dec: u32,
     pub port: u16,
 }
 
@@ -13,21 +14,37 @@ impl Peer {
     pub fn new(port: u16) -> Peer {
         use std::sync::mpsc::channel;
         let mut ip = " ".to_string();
+        let mut ip_dec = 0;
         let (tx, rx) = channel();
                 
         let sd = ServiceDiscovery::new_with_generator(port, || 1u32).unwrap();
-        sd.register_seek_peer_observer(tx.clone());
+        sd.register_seek_peer_observer(tx);
         sd.seek_peers();
 
         match rx.recv() {
-            Ok(msg) => ip = msg.to_string(),
+            Ok(msg) => {
+                ip_dec = msg;
+                ip = Peer::ip_decimal_to_dotted(msg);
+            }
             x=> println!("{:?}", x),
         }
 
+
         Peer {
             ip: ip,
+            ip_dec: ip_dec,
             port: port,
         }
+    }
+
+    fn ip_decimal_to_dotted(ip: u32) -> String {
+       let first = ip >> 24;
+       let second = (ip >> 16) & 0xFF;
+       let third = (ip >> 8) & 0xFF;
+       let fourth = ip & 0xFF;
+
+       format!("{}.{}.{}.{}", first.to_string(), second.to_string(),
+            third.to_string(), fourth.to_string())
     }
 }
 
@@ -52,8 +69,14 @@ mod tests{
         sd.set_listen_for_peers(true);
 
         let peer = Peer::new(5000);
-        assert_eq!(42.to_string(), peer.ip);
+        assert_eq!(42, peer.ip_dec);
         drop(peer);
         drop(sd);
+    }
+
+    #[test]
+    fn test_ip_to_dotted() {
+        let ip = 3232235620;
+        assert_eq!("192.168.0.100", Peer::ip_decimal_to_dotted(ip));
     }
 }
