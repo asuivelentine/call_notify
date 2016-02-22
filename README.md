@@ -32,6 +32,6 @@ The associative android app
 
 ---
 
-- notify the user about incomming calls
-- including some imformation about the caller
-- store the call history
+- notify the user about new nofitications
+- include notification information 
+- modules can be added 
