@@ -10,6 +10,7 @@ extern crate service_discovery;
 extern crate rustc_serialize;
 
 pub mod net_sd;
+pub mod net_tcp;
 
 #[cfg(test)]
 mod test {
