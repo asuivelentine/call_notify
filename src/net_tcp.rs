@@ -16,6 +16,9 @@ impl NotifyStream{
         let tcp_s = TcpStream::connect((ip, port));
         match tcp_s {
             Ok(stream) => { 
+                let abc = NotifyStream {
+                    stream: stream,
+                };
                 stream.set_read_timeout(Some(Duration::new(3,0)));
                 stream.set_write_timeout(Some(Duration::new(3,0)));
                 thread::spawn( move || {
@@ -35,6 +38,9 @@ impl NotifyStream{
     }
 
     fn run(stream: TcpStream) {
+        loop {
+            
+        }
     }
 
 }
