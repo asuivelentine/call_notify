@@ -72,6 +72,7 @@ impl NotifyStream{
 
                 match err.unwrap().kind() {
                     ErrorKind::WouldBlock => continue,
+                    ErrorKind::TimedOut => continue,
                     _ => {
                         stream.shutdown(Shutdown::Both);
                         break;
