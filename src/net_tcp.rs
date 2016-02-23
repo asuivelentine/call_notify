@@ -17,6 +17,7 @@ impl NotifyStream{
         match tcp_s {
             Ok(stream) => { 
                 stream.set_read_timeout(Some(Duration::new(3,0)));
+                stream.set_write_timeout(Some(Duration::new(3,0)));
                 thread::spawn( move || {
                     NotifyStream::run(stream)
                 });
