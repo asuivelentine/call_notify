@@ -13,8 +13,9 @@ struct NotifyStream {
 
 impl NotifyStream{
 
-    pub fn connect(peer: Peer, port: u16, receiver: Receiver<String>) {
+    pub fn connect(peer: Peer, receiver: Receiver<String>) {
         let ip = NotifyStream::get_ip_addr(peer.ip);
+        let port = peer.port + 1;
         let tcp_s = TcpStream::connect((ip, port));
         match tcp_s {
             Ok(stream) => { 
