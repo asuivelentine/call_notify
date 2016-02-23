@@ -57,9 +57,9 @@ mod tests {
     #[test]
     fn test_connect() {
         let peer = Peer {
-            ip: String::from("192.168.0.100"),
-            ip_dec: 3232235620,
-            port: 12346,
+            ip: String::from("127.0.0.1"),
+            ip_dec: 2130706433,
+            port: 12345,
         };
 
     }
