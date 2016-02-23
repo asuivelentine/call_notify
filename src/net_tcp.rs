@@ -51,11 +51,23 @@ impl NotifyStream{
             let incomming = stream.read(&mut buffer);
             if incomming.is_ok() {
                 let stream_data = String::from_utf8(buffer.to_vec()).unwrap();
+                msg_buffer = msg_buffer + &stream_data;
                 if stream_data.contains('\n') {
-                    println!("{}", msg_buffer);
+                    msg_buffer = msg_buffer.trim_matches('\n').to_string();
+                    println!("--> {}", msg_buffer);
                     msg_buffer.clear();
-                } else {
-                    msg_buffer = msg_buffer + &stream_data;
+                }
+            } else {
+                let err = incomming.err().unwrap().raw_os_error();
+
+                if err.is_none() {
+                    println!("unknown error occured - closing connection");
+                    break;
+                }
+
+                match err.unwrap() {
+                    11 => continue,
+                    _ => break,
                 }
             }
         }
