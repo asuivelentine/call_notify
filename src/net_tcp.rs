@@ -1,12 +1,13 @@
 //TCP connection
 
 use std::thread;
+use std::io::Read;
 use std::sync::mpsc::Receiver;
 use std::net::{ TcpStream, Ipv4Addr };
 use std::time::Duration;
 use net_sd::Peer;
 
-struct NotifyStream {
+pub struct NotifyStream {
     stream: TcpStream,
     localReceiver: Receiver<String>,
 }
@@ -17,6 +18,7 @@ impl NotifyStream{
         let ip = NotifyStream::get_ip_addr(peer.ip);
         let port = peer.port + 1;
         let tcp_s = TcpStream::connect((ip, port));
+        println!("{:?}", tcp_s);
         match tcp_s {
             Ok(stream) => { 
                 let tcp = NotifyStream {
@@ -43,7 +45,11 @@ impl NotifyStream{
 
     fn run(&self) {
         loop {
-            
+            let mut stream = self.stream.try_clone().unwrap();
+            let incomming = stream.read(&mut [0; 128]);
+            if incomming.is_ok() {
+                println!("{:?}", incomming.unwrap());
+            }
         }
     }
 
