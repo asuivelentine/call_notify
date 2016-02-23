@@ -1,23 +1,26 @@
 //TCP connection
 
 use std::thread;
+use std::sync::mpsc::Receiver;
 use std::net::{ TcpStream, Ipv4Addr };
 use std::time::Duration;
 use net_sd::Peer;
 
 struct NotifyStream {
     stream: TcpStream,
+    localReceiver: Receiver<String>,
 }
 
 impl NotifyStream{
 
-    pub fn connect(peer: Peer, port: u16) {
+    pub fn connect(peer: Peer, port: u16, receiver: Receiver<String>) {
         let ip = NotifyStream::get_ip_addr(peer.ip);
         let tcp_s = TcpStream::connect((ip, port));
         match tcp_s {
             Ok(stream) => { 
                 let tcp = NotifyStream {
                     stream: stream,
+                    localReceiver: receiver,
                 };
                 tcp.stream.set_read_timeout(Some(Duration::new(3,0)));
                 tcp.stream.set_write_timeout(Some(Duration::new(3,0)));
