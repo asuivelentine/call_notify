@@ -1,7 +1,7 @@
 //TCP connection
 
 use std::thread;
-use std::io::Read;
+use std::io::{ Read, ErrorKind };
 use std::sync::mpsc::Receiver;
 use std::net::{ TcpStream, Ipv4Addr, Shutdown };
 use std::time::Duration;
@@ -46,8 +46,8 @@ impl NotifyStream{
     fn run(&self) {
         let mut buffer = [0, 128];
         let mut msg_buffer = String::new();
+        let mut stream = self.stream.try_clone().unwrap();
         loop {
-            let mut stream = self.stream.try_clone().unwrap();
             let incomming = stream.read(&mut buffer);
             if incomming.is_ok() {
                 if incomming.unwrap() <= 0 {
@@ -62,7 +62,7 @@ impl NotifyStream{
                     msg_buffer.clear();
                 }
             } else {
-                let err = incomming.err().unwrap().raw_os_error();
+                let err = incomming.err();
 
                 if err.is_none() {
                     println!("unknown error occured - closing connection");
@@ -70,8 +70,8 @@ impl NotifyStream{
                     break;
                 }
 
-                match err.unwrap() {
-                    11 => continue,
+                match err.unwrap().kind() {
+                    ErrorKind::WouldBlock => continue,
                     _ => {
                         stream.shutdown(Shutdown::Both);
                         break;
