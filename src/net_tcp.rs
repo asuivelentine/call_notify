@@ -16,13 +16,13 @@ impl NotifyStream{
         let tcp_s = TcpStream::connect((ip, port));
         match tcp_s {
             Ok(stream) => { 
-                let abc = NotifyStream {
+                let tcp = NotifyStream {
                     stream: stream,
                 };
-                stream.set_read_timeout(Some(Duration::new(3,0)));
-                stream.set_write_timeout(Some(Duration::new(3,0)));
+                tcp.stream.set_read_timeout(Some(Duration::new(3,0)));
+                tcp.stream.set_write_timeout(Some(Duration::new(3,0)));
                 thread::spawn( move || {
-                    NotifyStream::run(stream)
+                    tcp.run()
                 });
             }
             Err(err) => panic!(err),
@@ -37,7 +37,7 @@ impl NotifyStream{
         Ipv4Addr::new(decimals[0], decimals[1], decimals[2], decimals[3])
     }
 
-    fn run(stream: TcpStream) {
+    fn run(&self) {
         loop {
             
         }
