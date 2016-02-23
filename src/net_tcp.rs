@@ -45,12 +45,18 @@ impl NotifyStream{
 
     fn run(&self) {
         let mut buffer = [0, 128];
+        let mut msg_buffer = String::new();
         loop {
             let mut stream = self.stream.try_clone().unwrap();
             let incomming = stream.read(&mut buffer);
             if incomming.is_ok() {
                 let stream_data = String::from_utf8(buffer.to_vec()).unwrap();
-                println!("{:?}", stream_data);
+                if stream_data.contains('\n') {
+                    println!("{}", msg_buffer);
+                    msg_buffer.clear();
+                } else {
+                    msg_buffer = msg_buffer + &stream_data;
+                }
             }
         }
     }

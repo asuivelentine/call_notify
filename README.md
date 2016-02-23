@@ -16,7 +16,7 @@ Share Notifications about incomming calls between your PC and android phone.
 ---
 
 	All messages will be send with TCP
-	The first bytes indicates how many bytes are expected.
+	The first two bytes indicates how many bytes are expected.
 	The last byte is a LRC checksum over each byte
 	The payload is in Json format containing:
 		- Version
