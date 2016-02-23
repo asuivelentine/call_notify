@@ -3,7 +3,7 @@
 use std::thread;
 use std::io::Read;
 use std::sync::mpsc::Receiver;
-use std::net::{ TcpStream, Ipv4Addr };
+use std::net::{ TcpStream, Ipv4Addr, Shutdown };
 use std::time::Duration;
 use net_sd::Peer;
 
@@ -50,6 +50,10 @@ impl NotifyStream{
             let mut stream = self.stream.try_clone().unwrap();
             let incomming = stream.read(&mut buffer);
             if incomming.is_ok() {
+                if incomming.unwrap() <= 0 {
+                    stream.shutdown(Shutdown::Both);
+                    break;
+                }
                 let stream_data = String::from_utf8(buffer.to_vec()).unwrap();
                 msg_buffer = msg_buffer + &stream_data;
                 if stream_data.contains('\n') {
@@ -62,12 +66,16 @@ impl NotifyStream{
 
                 if err.is_none() {
                     println!("unknown error occured - closing connection");
+                    stream.shutdown(Shutdown::Both);
                     break;
                 }
 
                 match err.unwrap() {
                     11 => continue,
-                    _ => break,
+                    _ => {
+                        stream.shutdown(Shutdown::Both);
+                        break;
+                    }
                 }
             }
         }
