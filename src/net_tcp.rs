@@ -1,6 +1,8 @@
 //TCP connection
 
+use std::thread;
 use std::net::{ TcpStream, Ipv4Addr };
+use std::time::Duration;
 use net_sd::Peer;
 
 struct NotifyStream {
@@ -9,9 +11,18 @@ struct NotifyStream {
 
 impl NotifyStream{
 
-    fn connect(ip: Peer, port: u16) {
-        let ip = NotifyStream::get_ip_addr(ip.ip);
+    pub fn connect(peer: Peer, port: u16) {
+        let ip = NotifyStream::get_ip_addr(peer.ip);
         let tcp_s = TcpStream::connect((ip, port));
+        match tcp_s {
+            Ok(stream) => { 
+                stream.set_read_timeout(Some(Duration::new(3,0)));
+                thread::spawn( move || {
+                    NotifyStream::run(stream)
+                });
+            }
+            Err(err) => panic!(err),
+        }
     }
 
     fn get_ip_addr(ip: String) -> Ipv4Addr {
@@ -20,6 +31,9 @@ impl NotifyStream{
         let decimals: Vec<u8> = octet_iter.map(|oct| u8::from_str_radix(oct, 10).unwrap()).collect();
 
         Ipv4Addr::new(decimals[0], decimals[1], decimals[2], decimals[3])
+    }
+
+    fn run(stream: TcpStream) {
     }
 
 }
