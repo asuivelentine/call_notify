@@ -44,11 +44,13 @@ impl NotifyStream{
     }
 
     fn run(&self) {
+        let mut buffer = [0, 128];
         loop {
             let mut stream = self.stream.try_clone().unwrap();
-            let incomming = stream.read(&mut [0; 128]);
+            let incomming = stream.read(&mut buffer);
             if incomming.is_ok() {
-                println!("{:?}", incomming.unwrap());
+                let stream_data = String::from_utf8(buffer.to_vec()).unwrap();
+                println!("{:?}", stream_data);
             }
         }
     }
