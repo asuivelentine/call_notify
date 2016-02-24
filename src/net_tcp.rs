@@ -109,7 +109,7 @@ mod tests {
     use std::net::{ TcpListener, TcpStream, Shutdown };
 
     #[test]
-    fn test_tcp_connect() {
+    fn tcp_connect_test() {
         let peer = Peer {
             ip: String::from("127.0.0.1"),
             ip_dec: 2130706433,
@@ -141,7 +141,7 @@ mod tests {
     }
 
     #[test]
-    fn test_get_ip() {
+    fn tcp_get_ip_test() {
         let ip = String::from("192.168.0.100");
         let ip = NotifyStream::get_ip_addr(ip);
         assert_eq!(192, ip.octets()[0]);
@@ -151,7 +151,7 @@ mod tests {
     }
 
     #[test]
-    fn test_remove_trailing_bytes() {
+    fn tcp_remove_trailing_bytes_test() {
         let msg = String::from("testString \ng");
         let msg = NotifyStream::remove_trailing_bytes(msg);
         assert_eq!("testString".to_string(), msg);

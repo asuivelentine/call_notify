@@ -60,7 +60,7 @@ mod tests{
     }
 
     #[test]
-    fn test_net_start() {
+    fn sd_start_test() {
         let port = 5000;
         let (tx, _) = channel();
         let sd = ServiceDiscovery::new(port, 42u32).unwrap();
@@ -74,7 +74,7 @@ mod tests{
     }
 
     #[test]
-    fn test_ip_to_dotted() {
+    fn sd_ip_to_dotted_test() {
         let ip = 3232235620;
         assert_eq!("192.168.0.100", Peer::ip_decimal_to_dotted(ip));
     }
