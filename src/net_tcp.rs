@@ -56,7 +56,6 @@ impl NotifyStream{
                 let stream_data = String::from_utf8(buffer.to_vec()).unwrap();
                 msg_buffer = msg_buffer + &stream_data;
                 if stream_data.contains('\n') {
-                    msg_buffer = msg_buffer.trim_matches('\n').to_string();
                     match self.localSender.send(msg_buffer.clone()) {
                         Ok(_) => {},
                         Err(_) => {
@@ -92,16 +91,43 @@ impl NotifyStream{
 #[cfg(test)]
 mod tests {
     use super::NotifyStream;
+    use std::thread;
+    use std::io::Write;
+    use std::time::Duration;
     use net_sd::Peer;
+    use std::sync::mpsc::{Sender, Receiver, channel};
+    use std::net::{ TcpListener, TcpStream, Shutdown };
 
     #[test]
-    fn test_connect() {
+    fn test_tcp_connect() {
         let peer = Peer {
             ip: String::from("127.0.0.1"),
             ip_dec: 2130706433,
             port: 12345,
         };
+        let msg = String::from("testString\n").into_bytes();
 
+        let (tx, rx): (Sender<String>, Receiver<String>) = channel();
+        let listener = TcpListener::bind("127.0.0.1:12346");
+        assert!(listener.is_ok());
+
+        let listener = listener.unwrap();
+        thread::spawn (move || {
+            NotifyStream::connect(peer, tx);
+        });
+        let stream = listener.accept();
+        thread::sleep(Duration::from_millis(500));
+        assert!(stream.is_ok());
+        let mut stream = stream.unwrap().0;
+        stream.write(&msg);
+
+        //thread::sleep(Duration::from_millis(500));
+
+        stream.shutdown(Shutdown::Both);
+        let reply = rx.recv();
+        assert!(reply.is_ok());
+        let reply = reply.unwrap();
+        assert_eq!("testString", reply);
     }
 
     #[test]
