@@ -2,30 +2,14 @@ use net_sd::Peer;
 use net_tcp::NotifyStream;
 use std::time::Duration;
 use std::thread;
-use std::sync::mpsc::channel;
-use std::sync::mpsc::{Sender, Receiver};
+use std::sync::mpsc::Sender;
 
-pub struct Connection {
-    state: ConnectionState,
-    port: u16,
-}
-
-enum ConnectionState {
-    Connected,
-    Disconnected,
-}
+pub struct Connection;
 
 impl Connection {
-    pub fn new(port: u16) -> Connection {
-        Connection {
-            state: ConnectionState::Disconnected,
-            port: port,
-        }
-    }
-    pub fn start(&self) {
-        let port = self.port.clone();
+    pub fn start(port: u16, sender: Sender<String>) {
         let peer = Connection::watchdog_sd(port);
-         
+        NotifyStream::connect(peer, sender);
     }
 
     fn watchdog_sd(port: u16) -> Peer {
