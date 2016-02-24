@@ -11,6 +11,8 @@ extern crate rustc_serialize;
 
 pub mod net_sd;
 pub mod net_tcp;
+mod msg;
+mod msg_handler;
 
 #[cfg(test)]
 mod test {
