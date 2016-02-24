@@ -56,6 +56,8 @@ impl NotifyStream{
                 let stream_data = String::from_utf8(buffer.to_vec()).unwrap();
                 msg_buffer = msg_buffer + &stream_data;
                 if stream_data.contains('\n') {
+                    //removes \n and all bytes after it
+                    msg_buffer = NotifyStream::remove_trailing_bytes(msg_buffer);
                     match self.localSender.send(msg_buffer.clone()) {
                         Ok(_) => {},
                         Err(_) => {
@@ -84,6 +86,14 @@ impl NotifyStream{
                 }
             }
         }
+    }
+
+    fn remove_trailing_bytes(msg: String) -> String {
+        let mut s = msg.clone();
+        let beta_offset = s.find('\n').unwrap_or(s.len());
+        let t: String = s.drain(..beta_offset).collect();
+
+        t.trim().to_string()
     }
 
 }
@@ -138,6 +148,13 @@ mod tests {
         assert_eq!(168, ip.octets()[1]);
         assert_eq!(0, ip.octets()[2]);
         assert_eq!(100, ip.octets()[3]);
+    }
+
+    #[test]
+    fn test_remove_trailing_bytes() {
+        let msg = String::from("testString \ng");
+        let msg = NotifyStream::remove_trailing_bytes(msg);
+        assert_eq!("testString".to_string(), msg);
     }
 
 }
