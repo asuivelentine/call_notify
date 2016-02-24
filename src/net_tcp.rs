@@ -2,19 +2,19 @@
 
 use std::thread;
 use std::io::{ Read, ErrorKind };
-use std::sync::mpsc::Receiver;
+use std::sync::mpsc::Sender;
 use std::net::{ TcpStream, Ipv4Addr, Shutdown };
 use std::time::Duration;
 use net_sd::Peer;
 
 pub struct NotifyStream {
     stream: TcpStream,
-    localReceiver: Receiver<String>,
+    localSender: Sender<String>,
 }
 
 impl NotifyStream{
 
-    pub fn connect(peer: Peer, receiver: Receiver<String>) {
+    pub fn connect(peer: Peer, sender: Sender<String>) {
         let ip = NotifyStream::get_ip_addr(peer.ip);
         let port = peer.port + 1;
         let tcp_s = TcpStream::connect((ip, port));
@@ -23,7 +23,7 @@ impl NotifyStream{
             Ok(stream) => { 
                 let tcp = NotifyStream {
                     stream: stream,
-                    localReceiver: receiver,
+                    localSender: sender,
                 };
                 tcp.stream.set_read_timeout(Some(Duration::new(3,0)));
                 tcp.stream.set_write_timeout(Some(Duration::new(3,0)));
