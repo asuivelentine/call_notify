@@ -18,7 +18,6 @@ impl NotifyStream{
         let ip = NotifyStream::get_ip_addr(peer.ip);
         let port = peer.port + 1;
         let tcp_s = TcpStream::connect((ip, port));
-        println!("{:?}", tcp_s);
         match tcp_s {
             Ok(stream) => { 
                 let tcp = NotifyStream {
@@ -58,7 +57,13 @@ impl NotifyStream{
                 msg_buffer = msg_buffer + &stream_data;
                 if stream_data.contains('\n') {
                     msg_buffer = msg_buffer.trim_matches('\n').to_string();
-                    println!("--> {}", msg_buffer);
+                    match self.localSender.send(msg_buffer.clone()) {
+                        Ok(_) => {},
+                        Err(_) => {
+                            stream.shutdown(Shutdown::Both);
+                            break;
+                        }
+                    }
                     msg_buffer.clear();
                 }
             } else {
