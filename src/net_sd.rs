@@ -1,4 +1,6 @@
 //Service Discovery module
+use std::thread;
+use std::time::Duration;
 use service_discovery::ServiceDiscovery;
 
 //if a peer is found, return the ip and the port to establish a regular tcp connection.
@@ -17,11 +19,13 @@ impl Peer {
         let mut ip_dec = None;
         let (tx, rx) = channel();
                 
-        let sd = ServiceDiscovery::new_with_generator(port, || 1u32).unwrap();
+        let sd = ServiceDiscovery::new(port, 1u32).unwrap();
         sd.register_seek_peer_observer(tx);
         sd.seek_peers();
 
-        match rx.recv() {
+        thread::sleep(Duration::from_millis(100));
+
+        match rx.try_recv() {
             Ok(msg) => {
                 ip_dec = Some(msg);
                 ip = Some(Peer::ip_decimal_to_dotted(msg));

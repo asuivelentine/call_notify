@@ -1,10 +1,11 @@
 use net_sd::Peer;
 use net_tcp::NotifyStream;
+use std::time::Duration;
 use std::thread;
 use std::sync::mpsc::channel;
 use std::sync::mpsc::{Sender, Receiver};
 
-struct Connection {
+pub struct Connection {
     state: ConnectionState,
     port: u16,
 }
