@@ -126,7 +126,7 @@ mod tests {
             NotifyStream::connect(peer, tx);
         });
         let stream = listener.accept();
-        thread::sleep(Duration::from_millis(500));
+        thread::sleep(Duration::from_millis(7000));
         assert!(stream.is_ok());
         let mut stream = stream.unwrap().0;
         stream.write(&msg);
