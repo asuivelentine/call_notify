@@ -106,7 +106,7 @@ mod test {
     use std::time::Duration;
     use net_sd::Peer;
     use std::sync::mpsc::{Sender, Receiver, channel};
-    use std::net::{ TcpListener, TcpStream, Shutdown };
+    use std::net::{ TcpListener, Shutdown };
 
     #[test]
     fn tcp_connect_test() {
@@ -130,8 +130,6 @@ mod test {
         assert!(stream.is_ok());
         let mut stream = stream.unwrap().0;
         stream.write(&msg);
-
-        //thread::sleep(Duration::from_millis(500));
 
         stream.shutdown(Shutdown::Both);
         let reply = rx.recv();
