@@ -22,8 +22,20 @@ impl Connection {
             port: port,
         }
     }
-    pub fn start(&self) {
+    pub fn start(&self) -> Peer{
+        let port = self.port.clone();
+        Connection::watchdog_sd(port)
+    }
 
+    fn watchdog_sd(port: u16) {
+        let mut peer = Peer::new(port);
+
+        while peer.ip.is_none() {
+            peer = Peer::new(port);
+            thread::sleep(Duration::from_millis(5000)); 
+        }
+
+        peer
     }
 }
 
