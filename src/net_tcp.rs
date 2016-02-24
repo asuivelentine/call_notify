@@ -9,20 +9,20 @@ use net_sd::Peer;
 
 pub struct NotifyStream {
     stream: TcpStream,
-    localSender: Sender<String>,
+    local_sender: Sender<String>,
 }
 
 impl NotifyStream{
 
     pub fn connect(peer: Peer, sender: Sender<String>) {
-        let ip = NotifyStream::get_ip_addr(peer.ip);
+        let ip = NotifyStream::get_ip_addr(peer.ip.unwrap());
         let port = peer.port + 1;
         let tcp_s = TcpStream::connect((ip, port));
         match tcp_s {
             Ok(stream) => { 
                 let tcp = NotifyStream {
                     stream: stream,
-                    localSender: sender,
+                    local_sender: sender,
                 };
                 tcp.stream.set_read_timeout(Some(Duration::new(3,0)));
                 tcp.stream.set_write_timeout(Some(Duration::new(3,0)));
@@ -58,7 +58,7 @@ impl NotifyStream{
                 if stream_data.contains('\n') {
                     //removes \n and all bytes after it
                     msg_buffer = NotifyStream::remove_trailing_bytes(msg_buffer);
-                    match self.localSender.send(msg_buffer.clone()) {
+                    match self.local_sender.send(msg_buffer.clone()) {
                         Ok(_) => {},
                         Err(_) => {
                             stream.shutdown(Shutdown::Both);
@@ -99,20 +99,20 @@ impl NotifyStream{
 }
 
 #[cfg(test)]
-mod tests {
+mod test {
     use super::NotifyStream;
     use std::thread;
     use std::io::Write;
     use std::time::Duration;
     use net_sd::Peer;
     use std::sync::mpsc::{Sender, Receiver, channel};
-    use std::net::{ TcpListener, TcpStream, Shutdown };
+    use std::net::{ TcpListener, Shutdown };
 
     #[test]
     fn tcp_connect_test() {
         let peer = Peer {
-            ip: String::from("127.0.0.1"),
-            ip_dec: 2130706433,
+            ip: Some(String::from("127.0.0.1")),
+            ip_dec: Some(2130706433),
             port: 12345,
         };
         let msg = String::from("testString\n").into_bytes();
@@ -130,8 +130,6 @@ mod tests {
         assert!(stream.is_ok());
         let mut stream = stream.unwrap().0;
         stream.write(&msg);
-
-        //thread::sleep(Duration::from_millis(500));
 
         stream.shutdown(Shutdown::Both);
         let reply = rx.recv();
