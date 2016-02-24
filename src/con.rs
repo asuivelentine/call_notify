@@ -1,8 +1,12 @@
+use net_sd::Peer;
+use net_tcp::NotifyStream;
+use std::thread;
 use std::sync::mpsc::channel;
 use std::sync::mpsc::{Sender, Receiver};
 
 struct Connection {
     state: ConnectionState,
+    port: u16,
 }
 
 enum ConnectionState {
@@ -11,7 +15,13 @@ enum ConnectionState {
 }
 
 impl Connection {
-    pub fn start() {
+    pub fn new(port: u16) -> Connection {
+        Connection {
+            state: ConnectionState::Disconnected,
+            port: port,
+        }
+    }
+    pub fn start(&self) {
 
     }
 }

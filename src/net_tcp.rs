@@ -15,7 +15,7 @@ pub struct NotifyStream {
 impl NotifyStream{
 
     pub fn connect(peer: Peer, sender: Sender<String>) {
-        let ip = NotifyStream::get_ip_addr(peer.ip);
+        let ip = NotifyStream::get_ip_addr(peer.ip.unwrap());
         let port = peer.port + 1;
         let tcp_s = TcpStream::connect((ip, port));
         match tcp_s {
@@ -111,8 +111,8 @@ mod test {
     #[test]
     fn tcp_connect_test() {
         let peer = Peer {
-            ip: String::from("127.0.0.1"),
-            ip_dec: 2130706433,
+            ip: Some(String::from("127.0.0.1")),
+            ip_dec: Some(2130706433),
             port: 12345,
         };
         let msg = String::from("testString\n").into_bytes();

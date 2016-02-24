@@ -4,8 +4,8 @@ use service_discovery::ServiceDiscovery;
 //if a peer is found, return the ip and the port to establish a regular tcp connection.
 #[derive(Debug, Clone)]
 pub struct Peer {
-    pub ip: String,
-    pub ip_dec: u32,
+    pub ip: Option<String>,
+    pub ip_dec: Option<u32>,
     pub port: u16,
 }
 
@@ -13,8 +13,8 @@ impl Peer {
     //creates a peer Object.
     pub fn new(port: u16) -> Peer {
         use std::sync::mpsc::channel;
-        let mut ip = " ".to_string();
-        let mut ip_dec = 0;
+        let mut ip = None;
+        let mut ip_dec = None;
         let (tx, rx) = channel();
                 
         let sd = ServiceDiscovery::new_with_generator(port, || 1u32).unwrap();
@@ -23,8 +23,8 @@ impl Peer {
 
         match rx.recv() {
             Ok(msg) => {
-                ip_dec = msg;
-                ip = Peer::ip_decimal_to_dotted(msg);
+                ip_dec = Some(msg);
+                ip = Some(Peer::ip_decimal_to_dotted(msg));
             }
             x=> println!("{:?}", x),
         }
@@ -68,7 +68,9 @@ mod test{
         sd.set_listen_for_peers(true);
 
         let peer = Peer::new(5000);
-        assert_eq!(42, peer.ip_dec);
+        assert!(peer.ip.is_some());
+        assert!(peer.ip_dec.is_some());
+        assert_eq!(42, peer.ip_dec.unwrap());
         drop(peer);
         drop(sd);
     }
