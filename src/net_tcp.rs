@@ -9,7 +9,7 @@ use net_sd::Peer;
 
 pub struct NotifyStream {
     stream: TcpStream,
-    localSender: Sender<String>,
+    local_sender: Sender<String>,
 }
 
 impl NotifyStream{
@@ -22,7 +22,7 @@ impl NotifyStream{
             Ok(stream) => { 
                 let tcp = NotifyStream {
                     stream: stream,
-                    localSender: sender,
+                    local_sender: sender,
                 };
                 tcp.stream.set_read_timeout(Some(Duration::new(3,0)));
                 tcp.stream.set_write_timeout(Some(Duration::new(3,0)));
@@ -58,7 +58,7 @@ impl NotifyStream{
                 if stream_data.contains('\n') {
                     //removes \n and all bytes after it
                     msg_buffer = NotifyStream::remove_trailing_bytes(msg_buffer);
-                    match self.localSender.send(msg_buffer.clone()) {
+                    match self.local_sender.send(msg_buffer.clone()) {
                         Ok(_) => {},
                         Err(_) => {
                             stream.shutdown(Shutdown::Both);
