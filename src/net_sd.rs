@@ -49,7 +49,7 @@ impl Peer {
 
 
 #[cfg(test)]
-mod tests{
+mod test{
     use super::*;
     use std::sync::mpsc::channel;
     use service_discovery::ServiceDiscovery;

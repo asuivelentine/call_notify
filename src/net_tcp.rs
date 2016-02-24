@@ -99,7 +99,7 @@ impl NotifyStream{
 }
 
 #[cfg(test)]
-mod tests {
+mod test {
     use super::NotifyStream;
     use std::thread;
     use std::io::Write;
