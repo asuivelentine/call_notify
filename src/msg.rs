@@ -1,4 +1,4 @@
-#[derive(Debug, Clone)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum MessageKind {
     ConnectionClosed,
     ModuleMessage,
@@ -25,12 +25,14 @@ impl Message {
 #[cfg(test)]
 mod tests {
     use super::Message;
+    use super::MessageKind;
 
     #[test]
     fn msg_new_test() {
         let msg = Message::new("hello world".to_string());
         assert_eq!("hello world".to_string(), msg.raw_data);
         assert_eq!(1, msg.version);
+        assert_eq!(MessageKind::Empty, msg.kind);
     }
 }
 
