@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/asuivelentine/call_notify.svg?branch=master)](https://travis-ci.org/asuivelentine/call_notify) [![Coverage Status](https://coveralls.io/repos/github/asuivelentine/call_notify/badge.svg?branch=master)](https://coveralls.io/github/asuivelentine/call_notify?branch=master) 
 ---
 
-Share Notifications about incomming calls between your PC and android phone.
+Share Notifications from your phone with your PC.
 
 ---
 
