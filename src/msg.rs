@@ -1,5 +1,13 @@
 #[derive(Debug, Clone)]
+pub enum MessageKind {
+    ConnectionClosed,
+    ModuleMessage,
+    Empty,
+}
+
+#[derive(Debug, Clone)]
 pub struct Message {
+    pub kind: MessageKind,
     pub raw_data: String,
     pub version: u16,
 }
@@ -7,6 +15,7 @@ pub struct Message {
 impl Message {
     fn new(raw: String) -> Message {
         Message {
+            kind: MessageKind::Empty,
             version: 1,
             raw_data: raw,
         }
