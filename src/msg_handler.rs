@@ -13,11 +13,15 @@ struct MessageHandler<'a> {
 }
 
 impl<'a> MessageHandler<'a> {
-    pub fn connect(port: u16) {
+    pub fn connect(port: u16) -> MessageHandler<'a> {
         let (tx, rx): (Sender<String>, Receiver<String>) = channel();
+        Connection::start(port, tx);
+
+        MessageHandler {
+            listeners: Vec::new(),
+        }
 
     }
-
     pub fn register(&mut self, item: &'a NotificationListener) {
         self.listeners.push(item);
     }
