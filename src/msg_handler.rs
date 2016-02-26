@@ -31,10 +31,13 @@ impl<'a> MessageHandler<'a> {
         let (tx, rx): (Sender<String>, Receiver<String>) = channel();
         Connection::start(port, tx);
 
-        MessageHandler {
+        let handler = MessageHandler {
             listeners: Vec::new(),
-        }
+        };
+        let mut hnd = handler.clone();
+        hnd.wait_for_messages(rx);
 
+        handler
     }
 
     fn wait_for_messages(&self, rx: Receiver<String>) {
