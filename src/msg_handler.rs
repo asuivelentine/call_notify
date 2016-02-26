@@ -3,12 +3,12 @@ use con::Connection;
 use std::sync::mpsc::{ Sender, Receiver };
 use std::sync::mpsc::channel;
 
-trait NotificationListener {
+pub trait NotificationListener {
     fn message_received(&self, msg: Message) -> Message;
     fn connectionClosed(&self);
 }
 
-struct MessageHandler<'a> {
+pub struct MessageHandler<'a> {
     listeners: Vec<&'a NotificationListener>,
 }
 
