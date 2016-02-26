@@ -10,6 +10,18 @@ pub trait NotificationListener {
     fn connectionClosed(&self);
 }
 
+impl <'a> NotificationListener for &'a MessageHandler<'a>{
+    fn message_received(&self, msg: Message) -> Message {
+        println!("{:?}", msg);
+        msg
+    }
+
+    fn connectionClosed(&self) {
+        println!("connection closed");
+    }
+}
+
+#[derive(Clone)]
 pub struct MessageHandler<'a> {
     listeners: Vec<&'a NotificationListener>,
 }
@@ -25,11 +37,11 @@ impl<'a> MessageHandler<'a> {
 
     }
 
-    fn wait_for_messages(listener: &NotificationListener, rx: Receiver<String>) {
+    fn wait_for_messages(&self, rx: Receiver<String>) {
         let timeout = Duration::from_millis(100);
         loop {
             if let Ok(msg) = rx.recv() {
-                listener.message_received(Message::new(msg));
+                self.message_received(Message::new(msg));
             }
             thread::sleep(timeout);
         }
