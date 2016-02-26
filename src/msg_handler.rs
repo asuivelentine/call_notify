@@ -1,4 +1,5 @@
 use msg::Message;
+use con::Connection;
 use std::sync::mpsc::{ Sender, Receiver };
 use std::sync::mpsc::channel;
 
@@ -16,8 +17,9 @@ impl<'a> MessageHandler<'a> {
         let (tx, rx): (Sender<String>, Receiver<String>) = channel();
 
     }
-    pub fn register(&self, item: &NotificationListener) {
 
+    pub fn register(&mut self, item: &'a NotificationListener) {
+        self.listeners.push(item);
     }
 }
 
