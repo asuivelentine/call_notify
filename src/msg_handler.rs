@@ -1,5 +1,7 @@
 use msg::Message;
 use con::Connection;
+use std::thread;
+use std::time::Duration;
 use std::sync::mpsc::{ Sender, Receiver };
 use std::sync::mpsc::channel;
 
@@ -22,6 +24,18 @@ impl<'a> MessageHandler<'a> {
         }
 
     }
+
+    fn wait_for_messages(listener: &NotificationListener, rx: Receiver<String>) {
+        let timeout = Duration::from_millis(100);
+        loop {
+            if let Ok(msg) = rx.recv() {
+                listener.message_received(Message::new(msg));
+            }
+            thread::sleep(timeout);
+        }
+        
+    }
+
     pub fn register(&mut self, item: &'a NotificationListener) {
         self.listeners.push(item);
     }

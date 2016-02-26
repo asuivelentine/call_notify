@@ -13,7 +13,7 @@ pub struct Message {
 }
 
 impl Message {
-    fn new(raw: String) -> Message {
+    pub fn new(raw: String) -> Message {
         Message {
             kind: MessageKind::Empty,
             version: 1,
