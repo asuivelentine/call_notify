@@ -23,8 +23,11 @@ impl Peer {
         sd.register_seek_peer_observer(tx);
         sd.seek_peers();
 
+        //this is needed because try_recv() is called too fast and can't receive anything
         thread::sleep(Duration::from_millis(100));
 
+        //check for incomming data
+        //the received data will be the ip of the service in decimal
         match rx.try_recv() {
             Ok(msg) => {
                 ip_dec = Some(msg);
@@ -40,6 +43,8 @@ impl Peer {
         }
     }
 
+    //The service will respond with it's ip in decimal
+    //calculates the dotted ip from the decimal form
     fn ip_decimal_to_dotted(ip: u32) -> String {
        let first = ip >> 24;
        let second = (ip >> 16) & 0xFF;
