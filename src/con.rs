@@ -1,3 +1,8 @@
+//This module wil handle All network connections.
+//It will wait antil the service is found in the lan.
+//as soon as it receives a message from the service,
+//it will use the ip from the answer to establish an TCP connection
+
 use net_sd::Peer;
 use net_tcp::NotifyStream;
 use std::time::Duration;
