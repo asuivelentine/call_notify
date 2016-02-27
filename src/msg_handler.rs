@@ -12,7 +12,10 @@ pub trait NotificationListener {
 
 impl <'a> NotificationListener for &'a MessageHandler<'a>{
     fn message_received(&self, msg: Message) -> Message {
-        println!("{:?}", msg);
+        for x in self.listeners.iter() {
+            x.message_received(msg.clone());
+            println!("{:?}", msg);
+        }
         msg
     }
 
@@ -34,6 +37,7 @@ impl<'a> MessageHandler<'a> {
         let handler = MessageHandler {
             listeners: Vec::new(),
         };
+        //will not work! only for test purposes
         let mut hnd = handler.clone();
         hnd.wait_for_messages(rx);
 
@@ -48,7 +52,7 @@ impl<'a> MessageHandler<'a> {
             }
             thread::sleep(timeout);
         }
-        
+
     }
 
     pub fn register(&mut self, item: &'a NotificationListener) {
