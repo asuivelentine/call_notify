@@ -50,6 +50,7 @@ impl NotifyStream{
             let incomming = stream.read(&mut buffer);
             if incomming.is_ok() {
                 if incomming.unwrap() <= 0 {
+                    self.local_sender.send("Connection closed".to_string());
                     stream.shutdown(Shutdown::Both);
                     break;
                 }
