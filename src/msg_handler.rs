@@ -5,6 +5,8 @@ use std::time::Duration;
 use std::sync::mpsc::{ Sender, Receiver };
 use std::sync::mpsc::channel;
 
+// this trait is used to inform other modules about incomming messages
+// to reveive messages, the module has to register itself.
 pub trait NotificationListener {
     fn message_received(&self, msg: Message) -> Message;
     fn connection_closed(&self);
@@ -17,8 +19,8 @@ impl <'a> NotificationListener for &'a MessageHandler<'a>{
         }
         for x in self.listeners.iter() {
             x.message_received(msg.clone());
-            println!("{:?}", msg);
         }
+        println!("{:?}", msg);
         msg
     }
 

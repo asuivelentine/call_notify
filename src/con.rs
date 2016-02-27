@@ -12,11 +12,14 @@ use std::sync::mpsc::Sender;
 pub struct Connection;
 
 impl Connection {
+    //start the watchdog for service discovery. This is a Blocking call,
+    //after the service is found, start the TCP connection
     pub fn start(port: u16, sender: Sender<String>) {
         let peer = Connection::watchdog_sd(port);
         NotifyStream::connect(peer, sender);
     }
 
+    //request the service, if the service is not present, wait 5 seconds and try it again
     fn watchdog_sd(port: u16) -> Peer {
         let mut peer = Peer::new(port);
 
