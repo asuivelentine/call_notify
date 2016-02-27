@@ -1,4 +1,4 @@
-use msg::Message;
+use msg::{ Message, MessageKind };
 use con::Connection;
 use std::thread;
 use std::time::Duration;
@@ -7,11 +7,14 @@ use std::sync::mpsc::channel;
 
 pub trait NotificationListener {
     fn message_received(&self, msg: Message) -> Message;
-    fn connectionClosed(&self);
+    fn connection_closed(&self);
 }
 
 impl <'a> NotificationListener for &'a MessageHandler<'a>{
     fn message_received(&self, msg: Message) -> Message {
+        if msg.kind == MessageKind::ConnectionClosed {
+            self.connection_closed();
+        }
         for x in self.listeners.iter() {
             x.message_received(msg.clone());
             println!("{:?}", msg);
@@ -19,8 +22,10 @@ impl <'a> NotificationListener for &'a MessageHandler<'a>{
         msg
     }
 
-    fn connectionClosed(&self) {
-        println!("connection closed");
+    fn connection_closed(&self) {
+        for listener in self.listeners.iter() {
+            listener.connection_closed();
+        }
     }
 }
 
