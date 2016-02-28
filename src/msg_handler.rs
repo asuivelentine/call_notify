@@ -16,16 +16,16 @@ impl <'a> NotificationListener for &'a MessageHandler<'a>{
     fn message_received(&self, msg: Message) -> Message {
         if msg.kind == MessageKind::ConnectionClosed {
             self.connection_closed();
+            return msg;
         }
         for x in self.listeners.iter() {
             x.message_received(msg.clone());
         }
-        println!("{:?}", msg);
         msg
     }
 
     fn connection_closed(&self) {
-        for listener in self.listeners.iter() {
+       for listener in self.listeners.iter() {
             listener.connection_closed();
         }
     }
@@ -34,36 +34,38 @@ impl <'a> NotificationListener for &'a MessageHandler<'a>{
 #[derive(Clone)]
 pub struct MessageHandler<'a> {
     listeners: Vec<&'a NotificationListener>,
+    port: u16,
 }
 
 impl<'a> MessageHandler<'a> {
-    pub fn connect(port: u16) -> MessageHandler<'a> {
-        let (tx, rx): (Sender<String>, Receiver<String>) = channel();
-        Connection::start(port, tx);
-
-        let handler = MessageHandler {
+    pub fn new(port: u16) ->  MessageHandler<'a> {
+        MessageHandler {
             listeners: Vec::new(),
-        };
-        //will not work! only for test purposes
-        let mut hnd = handler.clone();
-        hnd.wait_for_messages(rx);
-
-        handler
+            port: port,
+        }
     }
 
-    fn wait_for_messages(&self, rx: Receiver<String>) {
+    pub fn run(self) {
+        self.wait_for_messages();
+    }
+
+    fn wait_for_messages(&self) {
+        let (tx, rx): (Sender<String>, Receiver<String>) = channel();
+        Connection::start(self.port, tx);
+
         let timeout = Duration::from_millis(100);
         loop {
             if let Ok(msg) = rx.recv() {
-                self.message_received(Message::new(msg));
+                &self.message_received(Message::new(msg));
             }
             thread::sleep(timeout);
         }
 
     }
 
-    pub fn register(&mut self, item: &'a NotificationListener) {
+    pub fn register(&mut self, item: &'a NotificationListener) -> &mut MessageHandler<'a> {
         self.listeners.push(item);
+        self
     }
 }
 
