@@ -28,6 +28,7 @@ impl <'a> NotificationListener for &'a MessageHandler<'a>{
        for listener in self.listeners.iter() {
             listener.connection_closed();
         }
+       self.wait_for_messages();
     }
 }
 
