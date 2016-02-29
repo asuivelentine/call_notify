@@ -1,3 +1,4 @@
+// This module represents the message itself
 #[derive(Debug, PartialEq, Clone)]
 pub enum MessageKind {
     ConnectionClosed,

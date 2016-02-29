@@ -62,6 +62,7 @@ impl NotifyStream{
                     match self.local_sender.send(msg_buffer.clone()) {
                         Ok(_) => {},
                         Err(_) => {
+                            self.local_sender.send("Connection closed".to_string());
                             stream.shutdown(Shutdown::Both);
                             break;
                         }
@@ -72,7 +73,7 @@ impl NotifyStream{
                 let err = incomming.err();
 
                 if err.is_none() {
-                    println!("unknown error occured - closing connection");
+                    self.local_sender.send("Connection closed".to_string());
                     stream.shutdown(Shutdown::Both);
                     break;
                 }
@@ -81,6 +82,7 @@ impl NotifyStream{
                     ErrorKind::WouldBlock => continue,
                     ErrorKind::TimedOut => continue,
                     _ => {
+                        self.local_sender.send("Connection closed".to_string());
                         stream.shutdown(Shutdown::Both);
                         break;
                     }
