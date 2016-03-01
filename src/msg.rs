@@ -30,6 +30,14 @@ impl Message {
             data: None,
         }
     }
+
+    fn set_version(mut self) -> Message {
+        self
+    }
+
+    pub fn set_data(mut self, data: Option<Json>) -> Message {
+
+    }
 }
 
 #[cfg(test)]
