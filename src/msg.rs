@@ -1,4 +1,6 @@
 // This module represents the message itself
+use rustc_serialize::json::Json;
+
 #[derive(Debug, PartialEq, Clone)]
 pub enum MessageKind {
     ConnectionClosed,
@@ -11,6 +13,7 @@ pub struct Message {
     pub kind: MessageKind,
     pub raw_data: String,
     pub version: u16,
+    pub data: Option<Json>,
 }
 
 impl Message {
@@ -24,6 +27,7 @@ impl Message {
             kind: msg_type,
             version: 1,
             raw_data: raw,
+            data: None,
         }
     }
 }
