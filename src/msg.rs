@@ -38,7 +38,6 @@ impl Message {
     pub fn set_data(mut self, data: Option<Json>) -> Message {
         self.data = data;
         self
-        
     }
 }
 
@@ -63,5 +62,3 @@ mod tests {
         assert_eq!(MessageKind::ConnectionClosed, msg.kind);
     }
 }
-
-
