@@ -17,7 +17,7 @@ Share Notifications from your phone with your PC.
 
 	All messages will be send with TCP
 	Every package is closed by \n
-	The message is in Json format containing:
+	The payload is in Json format containing:
 		- Version
 		- Datetime
 		- Module's data
@@ -28,11 +28,12 @@ Share Notifications from your phone with your PC.
 
 The data are passed as 'Message' to the modules.
 
-Message :
+This type contains following information:
+
 	- Version
 	- Raw data
 	- Message type
-	- Json
+	- Json - Notification specific data
 
 
 #### Dependencies 
