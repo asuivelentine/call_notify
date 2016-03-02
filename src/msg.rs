@@ -27,7 +27,7 @@ impl Message {
         let json = Message::create_json(&raw);
         if json.is_some() {
             let json = json.clone().unwrap();
-            version = match Message::set_version(&json.clone()) {
+            version = match Message::get_version(&json.clone()) {
                 Some(n) => n,
                 None => 0,
             }
@@ -41,7 +41,7 @@ impl Message {
         }
     }
 
-    fn set_version(data: &Json) -> Option<u64> {
+    fn get_version(data: &Json) -> Option<u64> {
         let root = data.as_object();
         if root.is_none() {
             return None;
