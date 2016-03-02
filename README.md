@@ -15,13 +15,18 @@ Share Notifications from your phone with your PC.
 
 ---
 
-	All messages will be send with TCP
-	Every package is closed by \n
-	The payload is in Json format containing:
-		- [ ] Version
-		- [x] Message type
-		- [ ]Datetime
-		- [ ]Module ID
+
+
+All messages will be send with TCP
+
+**Every package is closed by \n**
+
+The payload is in Json format containing:
+<ul>
+<li><input type="checkbox" disabled=""> foo</li>
+<li><input type="checkbox" disabled="" checked=""> bar</li>
+<li><input type="checkbox" disabled=""> baz</li>
+</ul>
 
 #### Dependencies 
 
