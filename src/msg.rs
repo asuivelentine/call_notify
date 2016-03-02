@@ -12,7 +12,7 @@ pub enum MessageKind {
 pub struct Message {
     pub kind: MessageKind,
     pub raw_data: String,
-    pub version: usize,
+    pub version: u64,
     pub data: Option<Json>,
 }
 
@@ -41,8 +41,18 @@ impl Message {
         }
     }
 
-    fn set_version(data: &Json) -> Option<usize> {
-        Some(5)
+    fn set_version(data: &Json) -> Option<u64> {
+        let root = data.as_object();
+        if root.is_none() {
+            return None;
+        }
+
+        let version_json = root.unwrap().get("version");
+        if version_json.is_none() {
+            return None;
+        }
+
+        version_json.unwrap().as_u64()
     }
 
     fn create_json(data: &str) -> Option<Json>{
@@ -62,8 +72,9 @@ mod tests {
     #[test]
     fn msg_new_test() {
         let msg = Message::new("hello world".to_string());
-        assert_eq!("hello world".to_string(), msg.raw_data);
-        assert_eq!(1, msg.version);
+        let msg = Message::new("{\"version\":6,\"data\":\"hellow\",\"res\":{\"id\":42,\"is_good\":false}}".to_string());
+        assert_eq!("{\"version\":6,\"data\":\"hellow\",\"res\":{\"id\":42,\"is_good\":false}}".to_string(), msg.raw_data);
+        assert_eq!(6, msg.version);
         assert_eq!(MessageKind::ModuleMessage, msg.kind);
     }
 
@@ -71,7 +82,6 @@ mod tests {
     fn msg_new_close_test() {
         let msg = Message::new("Connection closed".to_string());
         assert_eq!("Connection closed".to_string(), msg.raw_data);
-        assert_eq!(1, msg.version);
         assert_eq!(MessageKind::ConnectionClosed, msg.kind);
     }
 }
