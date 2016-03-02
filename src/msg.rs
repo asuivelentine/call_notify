@@ -22,12 +22,14 @@ impl Message {
         if raw == "Connection closed".to_string() {
             msg_type = MessageKind::ConnectionClosed;
         }
+        
+        let json = Message::create_json(&raw);
 
         Message {
             kind: msg_type,
             version: 1,
             raw_data: raw,
-            data: None,
+            data: json,
         }
     }
 
@@ -35,9 +37,12 @@ impl Message {
         self
     }
 
-    pub fn set_data(mut self, data: Option<Json>) -> Message {
-        self.data = data;
-        self
+    fn create_json(data: &str) -> Option<Json>{
+        let json_data = Json::from_str(data);
+        match json_data {
+            Ok(n) => Some(n),
+            Err(_) => None,
+        }
     }
 }
 
