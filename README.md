@@ -18,10 +18,10 @@ Share Notifications from your phone with your PC.
 	All messages will be send with TCP
 	Every package is closed by \n
 	The payload is in Json format containing:
-		- Version
-		- Message type
-		- Caller number
-		- Datetime
+		- [ ] Version
+		- [x] Message type
+		- [ ]Datetime
+		- [ ]Module ID
 
 #### Dependencies 
 
