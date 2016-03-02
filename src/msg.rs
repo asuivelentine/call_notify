@@ -12,29 +12,37 @@ pub enum MessageKind {
 pub struct Message {
     pub kind: MessageKind,
     pub raw_data: String,
-    pub version: u16,
+    pub version: usize,
     pub data: Option<Json>,
 }
 
 impl Message {
     pub fn new(raw: String) -> Message {
         let mut msg_type = MessageKind::ModuleMessage;
+        let mut version = 0;
         if raw == "Connection closed".to_string() {
             msg_type = MessageKind::ConnectionClosed;
         }
         
         let json = Message::create_json(&raw);
+        if json.is_some() {
+            let json = json.clone().unwrap();
+            version = match Message::set_version(&json.clone()) {
+                Some(n) => n,
+                None => 0,
+            }
+        }
 
         Message {
             kind: msg_type,
-            version: 1,
+            version: version,
             raw_data: raw,
             data: json,
         }
     }
 
-    fn set_version(mut self) -> Message {
-        self
+    fn set_version(data: &Json) -> Option<usize> {
+        Some(5)
     }
 
     fn create_json(data: &str) -> Option<Json>{
