@@ -71,7 +71,6 @@ mod tests {
 
     #[test]
     fn msg_new_test() {
-        let msg = Message::new("hello world".to_string());
         let msg = Message::new("{\"version\":6,\"data\":\"hellow\",\"res\":{\"id\":42,\"is_good\":false}}".to_string());
         assert_eq!("{\"version\":6,\"data\":\"hellow\",\"res\":{\"id\":42,\"is_good\":false}}".to_string(), msg.raw_data);
         assert_eq!(6, msg.version);
@@ -83,5 +82,18 @@ mod tests {
         let msg = Message::new("Connection closed".to_string());
         assert_eq!("Connection closed".to_string(), msg.raw_data);
         assert_eq!(MessageKind::ConnectionClosed, msg.kind);
+    }
+
+    #[test]
+    fn msg_get_version() {
+        let msg = String::from("{\"version\":6,\"data\":\"hellow\",\"res\":{\"id\":42,\"is_good\":false}}");
+        let json = Message::create_json(&msg);
+        assert!(json.is_some());
+        let json = json.unwrap();
+        let version = Message::get_version(&json);
+        assert!(version.is_some());
+        let version = version.unwrap();
+        assert_eq!(6, version);
+
     }
 }
