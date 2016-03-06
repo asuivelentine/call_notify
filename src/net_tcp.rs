@@ -118,7 +118,7 @@ mod test {
             ip_dec: Some(2130706433),
             port: 12345,
         };
-        let msg = String::from("testString\n").into_bytes();
+        let msg = String::from("{\"version\":1,\"data\":\"hellow\",\"res\":{\"id\":42,\"is_good\":false}}\n").into_bytes();
 
         let (tx, rx): (Sender<String>, Receiver<String>) = channel();
         let listener = TcpListener::bind("127.0.0.1:12346");
@@ -138,7 +138,8 @@ mod test {
         let reply = rx.recv();
         assert!(reply.is_ok());
         let reply = reply.unwrap();
-        assert_eq!("testString", reply);
+        let correct  = String::from("{\"version\":1,\"data\":\"hellow\",\"res\":{\"id\":42,\"is_good\":false}}");
+        assert_eq!(correct, reply);
     }
 
     #[test]
